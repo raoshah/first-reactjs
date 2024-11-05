@@ -11,10 +11,16 @@ import RegisterScreen from './screens/RegisterScreen';
 import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import ShippingScreen from './screens/ShippingScreen';
-import PaymentScreen from './screens/PaymentScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import OrderScreen from './screens/OrderScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import Product from './components/Product';
+import MyOrderScreen from './screens/MyOrderScreen'
+import VerifyOtp from './components/VrifyOtp';
+import Privacy from './components/Privacy';
+import Terms from './components/Terms';
+import Refund from './components/Refund';
+import ShippingPolicy from './components/ShipPolicy';
 
 function App() {
   return (
@@ -33,11 +39,16 @@ function App() {
             <Route path='/product/:id' element={<ProductScreen />} />
             <Route path='/cart/:id?' element={<CartScreen />} />
             <Route path='/shipping' element={<ShippingScreen />} />
-            <Route path='/payment' element={<PaymentScreen />} />
             <Route path='/placeorder' element={<PlaceOrderScreen />} />
             <Route path='/order/:id' element={<OrderScreen />} />
             <Route path='/profile' element={<ProfileScreen />} />
-
+            <Route path='/pro' element={<Product />} />
+            <Route path='/verifyotp' element={<VerifyOtp />} />
+            <Route path="/privacy" element={<Privacy/>} />
+            <Route path="/terms" element={<Terms/>} />
+            <Route path="/refund" element={<Refund/>} />
+            <Route path="/shippolicy" element={<ShippingPolicy/>} />
+            <Route path="/myorder" element={<MyOrderScreen/>} />
 
           </Routes>
 

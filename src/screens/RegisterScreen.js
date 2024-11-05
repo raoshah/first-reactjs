@@ -1,118 +1,112 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Form, Button, Row, Col } from 'react-bootstrap'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
-import { register } from '../actions/userActions'
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
+import { register, logout } from '../actions/userActions';
+import './ShippingScreen.css'
 
 function RegisterScreen() {
-
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [message, setMessage] = useState('')
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
-    const redirect =  '/'
-
-    const userRegister = useSelector(state => state.userRegister)
-    const { error, loading, userInfo } = userRegister
+    const userRegister = useSelector((state) => state.userRegister);
+    const { error, loading, userInfo } = userRegister;
 
     useEffect(() => {
         if (userInfo) {
-            navigate('/')
+            dispatch(logout());  // Logout after registration to prompt login
+            navigate('/login');   // Redirect to login page
         }
-    }, [ userInfo, redirect, navigate])
+    }, [userInfo, navigate, dispatch]);
 
     const submitHandler = (e) => {
-        e.preventDefault()
-
+        e.preventDefault();
         if (password !== confirmPassword) {
-            setMessage('Passwords do not match')
+            setMessage('Passwords do not match');
         } else {
-            dispatch(register(name, email, password))
+            dispatch(register(name, number, password));
         }
-
-    }
+    };
 
     return (
-        <FormContainer>
-            <h1>Sign In</h1>
-            {message && <Message variant='danger'>{message}</Message>}
-            {error && <Message variant='danger'>{error}</Message>}
-            {loading && <Loader />}
-            <Form onSubmit={submitHandler}>
+        <div >
+            <div>
+                <h1 className="heading text-center">Register</h1>
+                {message && <Message variant="danger">{message}</Message>}
+                {error && <Message variant="danger">{error}</Message>}
+                {loading && <Loader />}
+                
+                <form onSubmit={submitHandler} >
+                    <div className="form-group">
+                        <label htmlFor="name">Name</label>
+                        <input
+                            type="text"
+                            id="name"
+                            required
+                            placeholder="Enter name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className="input-field"
+                        />
+                    </div>
 
-                <Form.Group controlId='name'>
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control
-                        required
-                        type='name'
-                        placeholder='Enter name'
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+                    <div className="form-group">
+                        <label htmlFor="number">Phone Number</label>
+                        <input
+                            type="tel"
+                            id="number"
+                            required
+                            placeholder="Enter Number"
+                            value={number}
+                            onChange={(e) => setNumber(e.target.value)}
+                            className="input-field"
+                        />
+                    </div>
 
-                <Form.Group controlId='email'>
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control
-                        required
-                        type='email'
-                        placeholder='Enter Email'
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            required
+                            placeholder="Enter Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="input-field"
+                        />
+                    </div>
 
-                <Form.Group controlId='password'>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        required
-                        type='password'
-                        placeholder='Enter Password'
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+                    <div className="form-group">
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            required
+                            placeholder="Confirm Password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="input-field"
+                        />
+                    </div>
 
-                <Form.Group controlId='passwordConfirm'>
-                    <Form.Label>Confirm Password</Form.Label>
-                    <Form.Control
-                        required
-                        type='password'
-                        placeholder='Confirm Password'
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                    >
-                    </Form.Control>
-                </Form.Group>
+                    <button type="submit" className="button5">
+                        Register
+                    </button>
+                </form>
 
-                <Button type='submit' variant='primary'>
-                    Register
-                </Button>
-
-            </Form>
-
-            <Row className='py-3'>
-                <Col>
-                    Have an Account? <Link
-                        to={'/login'}>
-                        Sign In
-                        </Link>
-                </Col>
-            </Row>
-        </FormContainer >
-    )
+                <div className="redirect-message text-center">
+                    Have an Account? <Link to="/login">Sign In</Link>
+                </div>
+            </div>
+        </div>
+    );
 }
 
-export default RegisterScreen
+export default RegisterScreen;

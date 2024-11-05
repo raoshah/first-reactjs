@@ -1,114 +1,100 @@
-import React, { useEffect } from 'react'
-import { Link, useNavigate, useParams, useLocation } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
-import Message from '../components/Message'
-import { addToCart, removeFromCart } from '../actions/cartActions'
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, removeFromCart } from '../actions/cartActions';
+import { BASE_URL } from '../config';
+import Loader from '../components/Loader';
+import { PiCurrencyInr } from "react-icons/pi";
+import './CartScreen.css';
 
 function CartScreen() {
-    const { id: productId } = useParams()
-    const location = useLocation()
-    const navigate = useNavigate()
+    const { id: productId } = useParams();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const qty = location.search ? Number(location.search.split('=')[1]) : 1
-    const dispatch = useDispatch()
+    const qty = location.search ? Number(location.search.split('=')[1]) : 1;
+    const dispatch = useDispatch();
 
-    const cart = useSelector(state => state.cart)
-    const { cartItems } = cart
+    const cart = useSelector(state => state.cart);
+    const { cartItems } = cart;
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (productId) {
-            dispatch(addToCart(productId, qty))
+            setLoading(true)
+            dispatch(addToCart(productId, qty));
         }
-    }, [dispatch, productId, qty])
+    }, [dispatch, productId, qty]);
 
     const removeFromCartHandler = (id) => {
-        dispatch(removeFromCart(id))
-    }
+        setLoading(false)
+        dispatch(removeFromCart(id));
+    };
 
     const checkoutHandler = () => {
-        navigate('/shipping')
-    }
+        navigate('/shipping');
+    };
 
     return (
-        <Row>
-            <Col md={8}>
+        <div className="cart-screen">
+            <div className="cart-items">
                 <h1>Shopping Cart</h1>
                 {cartItems.length === 0 ? (
-                    <Message variant='info'>
-                        Your cart is empty <Link to='/'>Go Back</Link>
-                    </Message>
+                    <h3>
+                        {loading ? <Loader/> :  <Link className='link' to="/">Your cart is empty add item</Link>}
+                    </h3>
                 ) : (
-                    <ListGroup variant='flush'>
-                        {cartItems.map(item => (
-                            <ListGroup.Item key={item.product}>
-                                <Row>
-                                    <Col md={2}>
-                                        <Image src={item.image} alt={item.name} fluid rounded />
-                                    </Col>
-                                    <Col md={3}>
-                                        <Link to={`/product/${item.product}`}>{item.name}</Link>
-                                    </Col>
-
-                                    <Col md={2}>
-                                    ₹ {item.price}
-                                    </Col>
-
-                                    <Col md={3}>
-                                        <Form.Control
-                                            as="select"
-                                            value={item.qty}
-                                            onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
-                                        >
-                                            {
-                                                [...Array(item.countInStock).keys()].map((x) => (
-                                                    <option key={x + 1} value={x + 1}>
-                                                        {x + 1}
-                                                    </option>
-                                                ))
-                                            }
-                                        </Form.Control>
-                                    </Col>
-
-                                    <Col md={1}>
-                                        <Button
-                                            type='button'
-                                            variant='dark'
-                                            onClick={() => removeFromCartHandler(item.product)}
-                                        >
-                                            <i className='fas fa-trash'></i>
-                                        </Button>
-                                    </Col>
-                                </Row>
-                            </ListGroup.Item>
-                        ))}
-                    </ListGroup>
+                    cartItems.map(item => (
+                        <div key={item.product} className="cart-item">
+                            <Link to={`/product/${item.product}`}>
+                                <img
+                                    src={`${BASE_URL}${item.image}`}
+                                    alt={item.name}
+                                    className="cart-image"
+                                />
+                            </Link>
+                            <Link to={`/product/${item.product}`} className="cart-item-name">
+                                {item.name}
+                            </Link>
+                            <div className="cart-item-price">₹ {item.price}</div>
+                            <select
+                                value={item.qty}
+                                onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
+                                className="cart-item-select"
+                            >
+                                {[...Array(item.countInStock).keys()].map((x) => (
+                                    <option key={x + 1} value={x + 1}>
+                                        {x + 1}
+                                    </option>
+                                ))}
+                            </select>
+                            <button
+                                className="cart-item-remove"
+                                onClick={() => removeFromCartHandler(item.product)}
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    ))
                 )}
-            </Col>
+            </div>
 
-            <Col md={4}>
-                <Card>
-                    <ListGroup variant='flush'>
-                        <ListGroup.Item>
-                            <h2>Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)}) items</h2>
-                            ₹ {cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
-                        </ListGroup.Item>
-                    </ListGroup>
-
-                    <ListGroup.Item>
-                        <Button
-                            type='button'
-                            className='btn-block'
-                            disabled={cartItems.length === 0}
-                            onClick={checkoutHandler}
-                        >
+            {cartItems.length > 0 && (
+                <div className="fixed-bottom-button">
+                    <div className="button-container">
+                        <button className="button2">
+                            <span><PiCurrencyInr /></span>{cartItems.reduce((acc, item) => acc + item.qty * item.price, 0).toFixed(2)}
+                        </button>
+                        <button onClick={checkoutHandler} className="button3">
                             Proceed To Checkout
-                        </Button>
-                    </ListGroup.Item>
-                </Card>
-            </Col>
-        </Row>
-    )
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
 }
 
-export default CartScreen
+export default CartScreen;
+

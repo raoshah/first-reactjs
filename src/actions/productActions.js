@@ -8,6 +8,10 @@ import {
     PRODUCT_DETAILS_SUCCESS,
     PRODUCT_DETAILS_FAIL,
 
+
+    PRODUCT_DETAILS_RESET,
+   
+
     PRODUCT_CREATE_REQUEST,
     PRODUCT_CREATE_SUCCESS,
     PRODUCT_CREATE_FAIL,
@@ -18,13 +22,13 @@ import {
 
 
 } from '../constants/productConstants'
-
+import { BASE_URL } from '../config'
 
 export const listProducts = () => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_REQUEST })
 
-        const { data } = await axios.get(`/get-products/`)
+        const { data } = await axios.get(`${BASE_URL}/get-products/`)
 
         dispatch({
             type: PRODUCT_LIST_SUCCESS,
@@ -42,11 +46,11 @@ export const listProducts = () => async (dispatch) => {
 }
 
 
-export const listProductDetails = (id = '11') => async (dispatch) => {
+export const listProductDetails = (id = '1') => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_DETAILS_REQUEST })
 
-        const { data } = await axios.get(`/product/${id}`)
+        const { data } = await axios.get(`${BASE_URL}/product/${id}/`)
 
         dispatch({
             type: PRODUCT_DETAILS_SUCCESS,
@@ -81,7 +85,7 @@ export const createProduct = () => async (dispatch, getState) => {
         }
 
         const { data } = await axios.post(
-            `/api/products/create/`,
+            `${BASE_URL}/api/products/create/`,
             {},
             config
         )
@@ -119,7 +123,7 @@ export const createProductReview = (productId = "1", review) => async (dispatch,
         }
 
         const { data } = await axios.post(
-            `/product/${productId}/reviews/`,
+            `${BASE_URL}/product/${productId}/reviews/`,
             review,
             config
         )
@@ -139,3 +143,7 @@ export const createProductReview = (productId = "1", review) => async (dispatch,
         })
     }
 }
+
+export const resetProductDetails = () => (dispatch) => {
+    dispatch({ type: PRODUCT_DETAILS_RESET });
+};

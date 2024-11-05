@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, Row, Col, Table } from 'react-bootstrap'
+import { Form, Button, Row, Col, Table, Container } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import { getUserDetails, updateUserProfile, logout } from '../actions/userActions'
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants'
 import { listMyOrders } from '../actions/orderActions'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import './ProfileScreen.css'
 
-function ProfileScreen({ history }) {
-
+function ProfileScreen() {
     const navigate = useNavigate()
 
     const [name, setName] = useState('')
@@ -18,6 +19,11 @@ function ProfileScreen({ history }) {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [message, setMessage] = useState('')
+    const [isEditing, setIsEditing] = useState(() => {
+        // Check if user was editing when they last visited
+        const savedState = localStorage.getItem('isEditing');
+        return savedState ? JSON.parse(savedState) : false; // Use saved state or false
+    })
 
     const dispatch = useDispatch()
 
@@ -32,7 +38,6 @@ function ProfileScreen({ history }) {
 
     const orderListMy = useSelector(state => state.orderListMy)
     const { loading: loadingOrders, error: errorOrders, orders } = orderListMy
-
 
     useEffect(() => {
         if (!userInfo) {
@@ -49,6 +54,11 @@ function ProfileScreen({ history }) {
         }
     }, [dispatch, navigate, userInfo, user, success])
 
+    // Save edit state to local storage
+    useEffect(() => {
+        localStorage.setItem('isEditing', JSON.stringify(isEditing))
+    }, [isEditing])
+
     const submitHandler = (e) => {
         e.preventDefault()
 
@@ -62,114 +72,149 @@ function ProfileScreen({ history }) {
                 'password': password
             }))
             setMessage('')
+            setIsEditing(false) // Exit edit mode on successful update
         }
-
     }
+
+    const logoutHandler = () => {
+        dispatch(logout())
+        navigate('/login')
+    }
+
     return (
-        <Row>
-            <Col md={3}>
-                <h2>User Profile</h2>
+        <Container fluid="sm" className="profile-container">
+            <Row>
+                <Col md={3} className="user-section">
+                    <h2>User Profile</h2>
+                    {message && <Message variant='danger'>{message}</Message>}
+                    {error && <Message variant='danger'>{error}</Message>}
+                    {loading && <Loader />}
 
-                {message && <Message variant='danger'>{message}</Message>}
-                {error && <Message variant='danger'>{error}</Message>}
-                {loading && <Loader />}
-                <Form onSubmit={submitHandler}>
+                    {/* If editing is true, show input fields for editing, otherwise show user details */}
+                    {!isEditing ? (
+                        <>
+                            <p><strong>Name:</strong> {name}</p>
+                            <p><strong>Email:</strong> {email}</p>
+                            <Button onClick={() => setIsEditing(true)} variant='primary' className="w-100 mt-3">
+                                Edit Profile
+                            </Button>
+                        </>
+                    ) : (
+                        <Form onSubmit={submitHandler} className="profile-form">
+                            <Form.Group controlId='name'>
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control
+                                    type='name'
+                                    placeholder='Enter name'
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    className="input-field"
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId='name'>
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            required
-                            type='name'
-                            placeholder='Enter name'
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+                            <Form.Group controlId='email'>
+                                <Form.Label>Email Address</Form.Label>
+                                <Form.Control
+                                    type='email'
+                                    placeholder='Enter Email'
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="input-field"
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId='email'>
-                        <Form.Label>Email Address</Form.Label>
-                        <Form.Control
-                            required
-                            type='email'
-                            placeholder='Enter Email'
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+                            <Form.Group controlId='password'>
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control
+                                    type='password'
+                                    placeholder='Enter Password'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="input-field"
+                                />
+                            </Form.Group>
 
-                    <Form.Group controlId='password'>
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
+                            <Form.Group controlId='passwordConfirm'>
+                                <Form.Label>Confirm Password</Form.Label>
+                                <Form.Control
+                                    type='password'
+                                    placeholder='Confirm Password'
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    className="input-field"
+                                />
+                            </Form.Group>
 
-                            type='password'
-                            placeholder='Enter Password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
+                            <Row>
+                                <Col>
+                                    <Button type='submit' variant='primary' className="w-100 mt-3">
+                                        Save Changes
+                                    </Button>
+                                </Col>
+                                <Col>
+                                    <Button
+                                        variant='secondary'
+                                        onClick={() => setIsEditing(false)} // Cancel edit mode
+                                        className="w-100 mt-3"
+                                    >
+                                        Cancel Edit
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Form>
+                    )}
 
-                    <Form.Group controlId='passwordConfirm'>
-                        <Form.Label>Confirm Password</Form.Label>
-                        <Form.Control
+                    {/* Logout Button */}
+                    <Button
+                        className="btn-logout mt-4 w-100"
+                        variant='danger'
+                        onClick={logoutHandler}
+                    >
+                        Logout
+                    </Button>
+                </Col>
 
-                            type='password'
-                            placeholder='Confirm Password'
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        >
-                        </Form.Control>
-                    </Form.Group>
 
-                    <Button type='submit' variant='primary'>
-                        Update
-                </Button>
 
-                </Form>
-            </Col>
 
-            <Col md={9}>
-                <h2>My Orders</h2>
-                {loadingOrders ? (
-                    <Loader />
-                ) : errorOrders ? (
-                    <Message variant='danger'>{errorOrders}</Message>
-                ) : (
-                            <Table striped responsive className='table-sm'>
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Date</th>
-                                        <th>Total</th>
-                                        <th>Paid</th>
-                                        <th>Delivered</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
 
-                                <tbody>
-                                    {orders.map(order => (
-                                        <tr key={order._id}>
-                                            <td>{order._id}</td>
-                                            <td>{order.createdAt.substring(0, 10)}</td>
-                                            <td>${order.totalPrice}</td>
-                                            <td>{order.isPaid ? order.paidAt.substring(0, 10) : (
-                                                <i className='fas fa-times' style={{ color: 'red' }}></i>
-                                            )}</td>
-                                            <td>
-                                                <LinkContainer to={`/order/${order._id}`}>
-                                                    <Button className='btn-sm'>Details</Button>
-                                                </LinkContainer>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        )}
-            </Col>
-        </Row>
+                <div className="orders-section">
+                    <h2>My Orders</h2>
+                    {loadingOrders ? (
+                        <Loader />
+                    ) : errorOrders ? (
+                        <Message variant="danger">{errorOrders}</Message>
+                    ) : orders.length === 0 ? (
+                        <div className="no-orders">
+                            <p>You have no orders yet.</p>
+                            <Link to="/" className="shop-link">Browse items in our shop</Link>
+                        </div>
+                    ) : (
+                        <div className="order-cards">
+                            {orders.map((order) => (
+                                <div key={order._id} className="order-card">
+                                    <div className="order-id">Order ID: {order._id}</div>
+                                    <div className="order-date">Date: {order.createdAt.substring(0, 10)}</div>
+                                    <div className="order-total">Total: ${order.totalPrice}</div>
+                                    <div className="order-paid">
+                                        Paid: {order.isPaid ? order.paidAt.substring(0, 10) : <i className='fas fa-times' style={{ color: 'red' }}></i>}
+                                    </div>
+                                    <div className="order-actions">
+                                        {order.isPaid ? (
+                                            <Link to={`/order/${order._id}`} className="btn-details link">View Details</Link>
+                                        ) : (
+                                            <Link to={`/order/${order._id}`} className="btn-pay-now link">Pay Now</Link>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+
+            </Row>
+        </Container>
     )
 }
 

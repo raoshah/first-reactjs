@@ -1,0 +1,193 @@
+.link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: white;
+    color: #333;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu-icon {
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.desktop-menu {
+    display: flex;
+    gap: 1.5rem;
+}
+
+
+.mobile-menu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding: 1rem;
+    gap: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mobile-menu.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.menu-item {
+    cursor: pointer;
+    padding: 0.5rem;
+    color: #333;
+    border-bottom: 1px solid rgb(201, 201, 201);
+}
+
+.profile {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+.content {
+    margin-top: 60px;
+}
+
+
+.navbar-cart {
+    font-size: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar-cart span {
+    font-size: 1.2rem;
+    margin-left: -50%;
+    color: white;
+    font-weight: lighter;
+}
+
+
+.login-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: large;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu-link {
+    font-size: large;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    border-bottom: 1px solid rgb(201, 201, 201);
+}
+
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.button,
+.button2,
+.button3,
+.button4,
+.button5,
+.out-stock {
+    background-color: rgb(58, 58, 58);
+    border: 1px solid rgb(58, 58, 58);
+    color: rgb(255, 255, 255);
+    padding: 0.4rem 0.8rem;
+    font-size: 1.5rem;
+    font-weight: normal;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: auto;
+}
+
+.button2 {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: none;
+    color: rgb(0, 0, 0);
+    padding: 0rem 0.2rem;
+}
+
+.button3 {
+    padding: 1rem 2rem;
+}
+
+.button4,
+.button5 {
+    padding: 1rem 2rem;
+    width: 100%;
+    border: 2px solid rgb(0, 0, 0);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.button5 {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.out-stock {
+    background-color: white;
+    border: none;
+    color: red;
+}
+
+.button2 span {
+   margin-bottom: 0.6rem;
+}
+
+.button:hover {
+    background-color: black;
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.logoImage {
+    margin-left: 0.8rem;
+    height: 3.5rem;
+}
+
+

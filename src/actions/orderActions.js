@@ -29,7 +29,7 @@ import {
 } from '../constants/orderConstants'
 
 import { CART_CLEAR_ITEMS } from '../constants/cartConstants'
-
+import { BASE_URL } from '../config'
 
 export const createOrder = (order) => async (dispatch, getState) => {
     try {
@@ -37,9 +37,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
             type: ORDER_CREATE_REQUEST
         })
 
-        const {
-            userLogin: { userInfo },
-        } = getState()
+        const { userLogin: { userInfo },} = getState()
 
         const config = {
             headers: {
@@ -49,7 +47,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.post(
-            `/order_add/`,
+            `${BASE_URL}/order_add/`,
             order,
             config
         )
@@ -96,7 +94,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `/order/${id}/`,
+            `${BASE_URL}/order/${id}/`,
             config
         )
 
@@ -136,7 +134,7 @@ export const payOrder = (id, paymentResult) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/api/orders/${id}/pay/`,
+            `${BASE_URL}/api/orders/${id}/pay/`,
             paymentResult,
             config
         )
@@ -176,7 +174,7 @@ export const deliverOrder = (order) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/api/orders/${order._id}/deliver/`,
+            `${BASE_URL}/api/orders/${order._id}/deliver/`,
             {},
             config
         )
@@ -217,7 +215,7 @@ export const listMyOrders = () => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `/myorders/`,
+            `${BASE_URL}/myorders/`,
             config
         )
 
@@ -256,7 +254,7 @@ export const listOrders = () => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `/api/orders/`,
+            `${BASE_URL}/api/orders/`,
             config
         )
 

@@ -1,8 +1,8 @@
 import React from 'react'
 
-function Rating({ value, text, color }) {
+function Rating({ value, color }) {
     return (
-        <div className="rating">
+        <span className="rating">
             <span>
                 <i style={{ color }} className={
                     value >= 1
@@ -62,9 +62,8 @@ function Rating({ value, text, color }) {
 
                 </i>
             </span>
-
-            <span>{text && text}</span>
-        </div>
+           
+        </span>
     )
 }
 

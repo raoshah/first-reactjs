@@ -37,6 +37,8 @@ import {
 
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
 
+import { BASE_URL } from '../config'
+
 export const login = (email, password) => async (dispatch) => {
     try {
         dispatch({
@@ -50,7 +52,7 @@ export const login = (email, password) => async (dispatch) => {
         }
 
         const { data } = await axios.post(
-            '/login/',
+            `${BASE_URL}/login/`,
             { 'username': email, 'password': password },
             config
         )
@@ -95,7 +97,7 @@ export const register = (name, email, password) => async (dispatch) => {
         }
 
         const { data } = await axios.post(
-            '/register/',
+            `${BASE_URL}/register/`,
             { 'name': name, 'email': email, 'password': password },
             config
         )
@@ -141,7 +143,7 @@ export const getUserDetails = (id = '1') => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `/${id}/`,
+            `${BASE_URL}/${id}/`,
             config
         )
 
@@ -180,7 +182,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/profile/update/`,
+            `${BASE_URL}/profile/update/`,
             user,
             config
         )
@@ -226,7 +228,7 @@ export const listUsers = () => async (dispatch, getState) => {
         }
 
         const { data } = await axios.get(
-            `/api/users/`,
+            `${BASE_URL}/api/users/`,
             config
         )
 
@@ -265,7 +267,7 @@ export const deleteUser = (id) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.delete(
-            `/api/users/delete/${id}/`,
+            `${BASE_URL}/api/users/delete/${id}/`,
             config
         )
 
@@ -304,7 +306,7 @@ export const updateUser = (user) => async (dispatch, getState) => {
         }
 
         const { data } = await axios.put(
-            `/api/users/update/${user._id}/`,
+            `${BASE_URL}/api/users/update/${user._id}/`,
             user,
             config
         )

@@ -2,34 +2,35 @@ import React from 'react';
 import { Card } from 'react-bootstrap';
 import Rating from './Rating';
 import { Link } from 'react-router-dom';
+import { BASE_URL } from '../config';
 
 function Product({ product }) {
     return (
-        
-            <Card className="h-100 ">
+
+        <Card className="h-100 ">
+            <Link to={`/product/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                <Card.Img src={`${BASE_URL}${product.image}`} className="card-img-top" style={{ objectFit: 'cover', height: '200px' }} />
+            </Link>
+
+            <Card.Body className="d-flex flex-column">
                 <Link to={`/product/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <Card.Img src={product.image} className="card-img-top" style={{ objectFit: 'cover', height: '200px' }} />
+                    <Card.Title as="div">
+                        <strong>{product.name}</strong>
+                    </Card.Title>
                 </Link>
 
-                <Card.Body className="d-flex flex-column">
-                    <Link to={`/product/${product._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                        <Card.Title as="div">
-                            <strong>{product.name}</strong>
-                        </Card.Title>
-                    </Link>
+                <Card.Text>
 
-                    <Card.Text>
-                       
-                            <Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} />
-                    
-                    </Card.Text>
+                    <Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} />
 
-                    <Card.Text as="h3">
-                        ₹ {product.price}
-                    </Card.Text>
-                </Card.Body>
-            </Card>
-      
+                </Card.Text>
+
+                <Card.Text as="h3">
+                    ₹ {product.price}
+                </Card.Text>
+            </Card.Body>
+        </Card>
+
     );
 }
 
